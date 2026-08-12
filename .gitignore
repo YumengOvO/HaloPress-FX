@@ -1,10 +1,12 @@
 # Dependencies
 node_modules
+.npm-cache
 
 # Build output
 dist
 dist-ssr
 test-results
+releases
 
 # Environment
 .env

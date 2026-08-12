@@ -65,6 +65,10 @@
   "scripts": {
     "dev": "vite",
     "build": "node scripts/build.mjs",
+    "build:wordpress": "npm run build && node scripts/build-wordpress-plugin.mjs",
+    "package:wordpress": "npm run build:wordpress && npm run verify:wordpress && node scripts/package-wordpress-plugin.mjs",
+    "verify:wordpress": "node scripts/verify-wordpress-plugin.mjs",
+    "test:wordpress": "npm run verify:wordpress && node test/wordpress-frontend.js",
     "preview": "vite preview",
     "test": "node test/smoke.js",
     "test:source": "node test/smoke.js --source && node test/triangle-fallback.js",

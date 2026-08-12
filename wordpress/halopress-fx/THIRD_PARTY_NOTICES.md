@@ -1,6 +1,18 @@
-MIT License
+# Third-Party Notices
 
-Copyright (c) 2026 CialloKing, 羽梦, and HaloPress-FX contributors
+HaloPress-FX contains a modified distribution of **ba-click-fx**, originally
+created by CialloKing and released under the MIT License.
+
+Early versions of ba-click-fx were developed with reference to the
+implementation, parameters, and visual behavior of these MIT-licensed projects:
+
+- **BASpark**, maintained at `DoomVoss/BASpark`
+- **BA-Spark-Cursor**, maintained at `VanillaNahida/BA-Spark-Cursor`
+
+BA-Spark-Cursor states that its click effect originates from BASpark. The
+upstream notice is retained to preserve attribution and license information.
+
+Copyright (c) 2026 Doom
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

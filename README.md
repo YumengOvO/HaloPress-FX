@@ -7,6 +7,8 @@
 
 HaloPress-FX 是一款 WordPress 前台点击动画插件，为网站添加《蔚蓝档案》风格的点击光环、粒子碎片和光标拖尾。插件基于 [`ba-click-fx`](https://github.com/CialloKing/ba-click-fx) 动画引擎封装，无需修改主题，安装启用后即可全站生效。
 
+[![访客计数](https://count.yumengovo.com/@HaloPress-FX)](https://count.yumengovo.com/@HaloPress-FX)
+
 ## 功能特点
 
 - 鼠标点击与触摸轻点时显示光环和粒子动画

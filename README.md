@@ -121,6 +121,7 @@ releases/halopress-fx-0.1.0.zip
 
 HaloPress-FX 保留了上游动画引擎的高级配置语义：
 
+- 当前内置引擎对应 `ba-click-fx@1.2.29`；若单独开发动画引擎，可使用 `npm install ba-click-fx@1.2.29` 安装相同版本。
 - `maxDpr` 表示最大设备像素比，默认 1；高清预设会显式提高该值。
 - `inputSamplingRate` 接受 `0` 或 `1..1000` Hz，`0` 表示不限频；例如 `inputSamplingRate: 30` 会把移动输入限制为每秒 30 次采样。
 - WebGPU 可用不代表 HDR 已启用，只有 `resolvedWebGPUOutputMode === 'extended'` 才说明浏览器成功建立了 `rgba16float + toneMapping: extended` 输出。

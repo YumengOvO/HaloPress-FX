@@ -37,6 +37,12 @@ HaloPress-FX 是一款 WordPress 前台点击动画插件，为网站添加《�
 - 自动忽略“移动时始终显示拖尾”设置
 - 使用 `touch-action: auto`，不会抢占页面滚动手势
 
+### 移动端浏览器滑动时为什么没有轨迹拖尾？
+
+HaloPress-FX 默认优先保留 WordPress 页面的原生滚动。浏览器接管触摸滑动后可能发送 `pointercancel`，当前拖尾会随之结束，但轻点动画仍然可用。
+
+底层动画引擎支持通过 `touchAction: 'none'` 禁止默认手势，从而在任意滑动方向持续显示拖尾；HaloPress-FX 不启用该模式，因为它会阻止页面的正常滚动和缩放。插件前台始终使用 `touch-action: auto`。
+
 ## 环境要求
 
 - WordPress 6.0 或更高版本
@@ -110,6 +116,16 @@ releases/halopress-fx-0.1.0.zip
 - 浅色背景轮廓
 - 输入采样率
 - WebGPU HDR 偏好
+
+### 动画引擎兼容说明
+
+HaloPress-FX 保留了上游动画引擎的高级配置语义：
+
+- `maxDpr` 表示最大设备像素比，默认 1；高清预设会显式提高该值。
+- `inputSamplingRate` 接受 `0` 或 `1..1000` Hz，`0` 表示不限频；例如 `inputSamplingRate: 30` 会把移动输入限制为每秒 30 次采样。
+- WebGPU 可用不代表 HDR 已启用，只有 `resolvedWebGPUOutputMode === 'extended'` 才说明浏览器成功建立了 `rgba16float + toneMapping: extended` 输出。
+- 展示页的“UI HDR”是演示站点私有功能，不属于 WordPress 插件前台功能；相关 CSS 能力检测可能涉及 `dynamic-range-limit: no-limit`。
+- 颜色映射支持兼容模式 `hue-only` 和相对映射模式 `relative-oklch`。
 
 ## 开发命令
 

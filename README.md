@@ -79,7 +79,7 @@ npm run package:wordpress
 生成的安装包位于：
 
 ```text
-releases/halopress-fx-0.1.1.zip
+releases/halopress-fx-0.1.2.zip
 ```
 
 ## 后台设置

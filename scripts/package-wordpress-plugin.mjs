@@ -17,6 +17,14 @@ if (!version) {
 
 const releaseDir = join(rootDir, 'releases');
 const archivePath = join(releaseDir, `halopress-fx-${version}.zip`);
+const archiveSources = [
+  'assets',
+  'includes',
+  'halopress-fx.php',
+  'LICENSE',
+  'readme.txt',
+  'THIRD_PARTY_NOTICES.md',
+];
 mkdirSync(releaseDir, { recursive: true });
 
 function readZipEntries(filePath) {
@@ -68,13 +76,13 @@ let result;
 if (process.platform === 'win32') {
   result = spawnSync(
     'tar.exe',
-    ['-a', '-cf', archivePath, '.'],
+    ['-a', '-cf', archivePath, ...archiveSources],
     { cwd: pluginDir, stdio: 'inherit' },
   );
 } else {
   result = spawnSync(
     'zip',
-    ['-q', '-r', archivePath, '.'],
+    ['-q', '-r', archivePath, ...archiveSources],
     { cwd: pluginDir, stdio: 'inherit' },
   );
 }
@@ -90,6 +98,9 @@ const rawArchiveEntries = readZipEntries(archivePath);
 if (rawArchiveEntries.some(entry => entry.includes('\\'))) {
   throw new Error('Plugin archive contains Windows path separators. ZIP entries must use forward slashes.');
 }
+if (rawArchiveEntries.some(entry => entry === '.' || entry === './' || entry.startsWith('./'))) {
+  throw new Error('Plugin archive contains an explicit dot directory. Entries must start at the archive root.');
+}
 if (rawArchiveEntries.some(entry =>
   entry.startsWith('/')
   || /^[a-z]:/iu.test(entry)
@@ -98,7 +109,6 @@ if (rawArchiveEntries.some(entry =>
 }
 
 const archiveEntries = rawArchiveEntries
-  .map(entry => entry.replace(/^\.\//u, ''))
   .filter(Boolean);
 
 const requiredArchiveFiles = [

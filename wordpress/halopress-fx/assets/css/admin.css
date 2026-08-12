@@ -1,0 +1,171 @@
+.halopress-fx-admin {
+  max-width: 960px;
+}
+
+.halopress-fx-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 24px 0 18px;
+}
+
+.halopress-fx-header h1 {
+  margin: 0 0 6px;
+}
+
+.halopress-fx-header p {
+  margin: 0;
+  color: #50575e;
+  font-size: 14px;
+}
+
+.halopress-fx-version {
+  padding: 5px 10px;
+  border: 1px solid #c3c4c7;
+  border-radius: 999px;
+  background: #fff;
+  color: #50575e;
+}
+
+.halopress-fx-card {
+  margin: 0 0 16px;
+  padding: 22px 24px;
+  border: 1px solid #c3c4c7;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.halopress-fx-card h2 {
+  margin: 0 0 6px;
+}
+
+.halopress-fx-card > .description {
+  margin: 0 0 20px;
+}
+
+.halopress-fx-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.halopress-fx-check input {
+  margin-top: 2px;
+}
+
+.halopress-fx-check span,
+.halopress-fx-check small {
+  display: block;
+}
+
+.halopress-fx-check small {
+  margin-top: 3px;
+  color: #646970;
+  font-weight: 400;
+}
+
+.halopress-fx-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 24px;
+  margin-top: 24px;
+}
+
+.halopress-fx-field > span {
+  display: block;
+  margin-bottom: 7px;
+  font-weight: 600;
+}
+
+.halopress-fx-field select,
+.halopress-fx-field input[type="number"] {
+  width: 100%;
+  max-width: none;
+}
+
+.halopress-fx-field input[type="color"] {
+  width: 64px;
+  height: 36px;
+  padding: 2px;
+}
+
+.halopress-fx-range {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 52px;
+  align-items: center;
+  gap: 12px;
+}
+
+.halopress-fx-range output {
+  padding: 4px 6px;
+  border: 1px solid #dcdcde;
+  border-radius: 4px;
+  background: #f6f7f7;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.halopress-fx-advanced {
+  padding: 0;
+}
+
+.halopress-fx-advanced summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 19px 24px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.halopress-fx-advanced summary small {
+  color: #646970;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.halopress-fx-advanced[open] {
+  padding-bottom: 22px;
+}
+
+.halopress-fx-advanced[open] summary {
+  border-bottom: 1px solid #dcdcde;
+}
+
+.halopress-fx-advanced > .description,
+.halopress-fx-advanced > .halopress-fx-check {
+  margin-right: 24px;
+  margin-left: 24px;
+}
+
+.halopress-fx-advanced > .description {
+  margin-top: 20px;
+}
+
+.halopress-fx-advanced-fields {
+  margin-right: 24px;
+  margin-left: 24px;
+}
+
+.halopress-fx-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 24px;
+}
+
+@media (max-width: 782px) {
+  .halopress-fx-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .halopress-fx-card {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+}

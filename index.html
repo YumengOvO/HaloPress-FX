@@ -1,0 +1,804 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>蔚蓝档案网页点击特效与鼠标拖尾 | Blue Archive Click Effect | ba-click-fx</title>
+  <meta name="description" content="ba-click-fx 是一个默认使用纯 WebGL2、可选 WebGPU 真实 HDR 并自动回退 Canvas 2D 的蔚蓝档案网页点击特效与鼠标拖尾动画库，支持鼠标、触摸、npm 和 CDN，零运行时依赖。" />
+  <meta name="keywords" content="ba-click-fx, Blue Archive, 蔚蓝档案, click effect, mouse click effect, cursor effect, cursor trail, touch effect, Canvas 2D, WebGL2, WebGPU, HDR, web animation" />
+  <link rel="canonical" href="https://ba-click-fx.cialloking.top/" />
+  <meta property="og:title" content="蔚蓝档案网页点击特效与鼠标拖尾 | ba-click-fx" />
+  <meta property="og:description" content="默认使用纯 WebGL2、可选 WebGPU 真实 HDR，并支持 Canvas 2D 与软件回退的蔚蓝档案网页点击特效与鼠标拖尾动画库。" />
+  <meta property="og:image" content="https://github.com/CialloKing/ba-click-fx/releases/download/v1.2.12/ba-click-fx-demo.gif" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ba-click-fx.cialloking.top/" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💠</text></svg>" />
+  <style>.panel{transform:translateX(100%)}.panel-overlay{opacity:0;pointer-events:none}.intro-section{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);max-width:600px}.hint-bar{position:fixed;bottom:0;left:0;right:0}.hero-float{position:fixed;top:20px;left:24px}.panel-toggle{position:fixed;top:20px;right:20px}</style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "ba-click-fx",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web",
+    "description": "Blue Archive click effect and cursor trail animation for web. 蔚蓝档案风格网页鼠标点击特效、触摸特效、粒子圆环和拖尾动画库。",
+    "url": "https://ba-click-fx.cialloking.top/",
+    "codeRepository": "https://github.com/CialloKing/ba-click-fx",
+    "programmingLanguage": "JavaScript",
+    "license": "https://github.com/CialloKing/ba-click-fx/blob/main/LICENSE"
+  }
+  </script>
+</head>
+
+<body>
+  <!-- 浮动标题 -->
+  <div class="hero-float">
+    <h1>Blue Archive Click FX</h1>
+    <a href="https://github.com/CialloKing/ba-click-fx" target="_blank" class="hero-link">GitHub</a>
+    <button class="lang-toggle" id="langToggle" title="Switch Language">EN</button>
+  </div>
+
+  <!-- 项目介绍（SEO 可见文本） -->
+  <section class="intro-section" id="introSection">
+    <button class="intro-dismiss" id="introDismiss" title="关闭">✕</button>
+    <h2 id="introTitle">ba-click-fx</h2>
+    <p id="introP1">
+      Blue Archive / 蔚蓝档案 style mouse click effect and cursor trail animation for web.
+      Click, drag, or move your mouse to preview the effect.
+    </p>
+    <p id="introP2">
+      ba-click-fx uses Full WebGL2 by default with optional standard WebGPU and
+      WebGPU HDR modes, plus safe Canvas 2D fallbacks.
+      Zero external dependencies.
+    </p>
+    <nav aria-label="Project links">
+      <a href="https://github.com/CialloKing/ba-click-fx">GitHub</a>
+      <a href="https://www.npmjs.com/package/ba-click-fx">npm</a>
+    </nav>
+    <details>
+      <summary id="introInstallSummary">安装方式 / Installation</summary>
+      <div id="introInstallContent">
+        <p><strong>npm</strong></p>
+        <pre><code>npm install ba-click-fx</code></pre>
+        <p><strong>CDN</strong></p>
+        <pre><code>&lt;script src="https://cdn.jsdelivr.net/npm/ba-click-fx@1.2.29/dist/ba-click-fx.iife.js"&gt;&lt;/script&gt;</code></pre>
+      </div>
+    </details>
+    <details>
+      <summary id="introFAQSummary">常见问题 / FAQ</summary>
+      <div id="introFAQContent">
+        <p><strong>ba-click-fx 和蔚蓝档案有关吗？</strong> 这是一个受蔚蓝档案 UI 点击和拖尾效果启发的粉丝向视觉特效库。</p>
+        <p><strong>需要图片素材或 WebGL 吗？</strong> 不需要图片素材；默认使用纯 WebGL2，可选标准 WebGPU 或 WebGPU HDR，能力不足时自动回退 WebGL2、Canvas 2D、软件 Bloom 与原生辉光，零外部运行时依赖。</p>
+        <p><strong>WebGPU 一定会显示真实 HDR 吗？</strong> 不会。只有 <code>resolvedWebGPUOutputMode === 'extended'</code> 才表示 Canvas 会以扩展 sRGB 编码保留超过 SDR 白色的高光；还需要 HDR 显示器、系统 HDR 和浏览器 WebGPU HDR Canvas 同时可用。</p>
+        <p><strong>移动端浏览器滑动时为什么没有轨迹拖尾？</strong> “触摸行为”为“自动”或“直接操作”时，浏览器会优先接管滚动并发送 <code>pointercancel</code>，拖尾随之中止。将控制面板中的“触摸行为”切换为“禁止默认手势”，即可在任意滑动方向持续触发拖尾；页面仍需单轴滚动时，可选择“仅横向平移”或“仅纵向平移”，库只在浏览器未接管的方向保留拖尾。此设置也会改变页面的原生滚动与缩放手势。</p>
+        <p><strong>内置主题和自定义图片背景怎样参与游戏式合成？</strong> 页面主题始终由 CSS 单独显示。特效背景参考可选择“匹配当前页面”或“未知透明背景”：前者把内置主题或已解码图片送入渲染器，后者不读取页面背景并保留透明宿主的 Coverage 合同。纯白主题在关闭“隔离合成”时保留接近游戏原始的低可见度；开启后会自动使用 <code>lightBackgroundContrastAlpha: 0.35</code> 补足网页白底可见性。本地图片选择器会创建当前页面有效的 <code>blob:</code> URL，不需要 CORS，但刷新后需重新选择；手输 <code>file://</code> 会交给允许读取本地协议且允许作为 Canvas/WebGL 纹理使用的受信任桌面宿主；普通 HTTP/HTTPS 页面仍受浏览器本地资源权限限制，请使用本地图片选择器。任意自定义 CSS 渐变或多图层背景无法可靠自动上传，仍作为普通 DOM 背景显示。</p>
+        <p><strong>纯白背景下特效颜色太浅？</strong> 关闭“隔离合成”时会保留游戏原始的低可见度表现；开启后，展示页自动叠加不参与 Bloom 的淡青对比轮廓，使效果在常见网页白底上保持可见。其他宿主也可按需显式设置 <code>lightBackgroundContrastAlpha</code>。</p>
+        <p><strong>透明桌面应怎样选择合成模式？</strong> 展示页和严格游戏还原保留默认 <code>scene</code>；WebView2、Electron 等透明宿主显式使用 <code>browser-overlay</code>。未知背景下，标准 <code>source-over</code> 无法同时实现严格 Unity 加色、纯 Coverage Alpha 和白底绝不变暗；隔离合成不会读取桌面，已知背景应通过 <code>setCompositingReference()</code> 提供给渲染器。</p>
+        <p><strong>能用在博客或个人主页吗？</strong> 可以，支持 npm、CDN 和直接 script 引入三种方式。</p>
+      </div>
+    </details>
+    <details>
+      <summary id="introHostApiSummary">宿主控制 API / Host Control API</summary>
+      <div id="introHostApiContent">
+        <pre><code>const fx = new BAClickFX({ inputSource: 'manual' });
+fx.pointerDown({ x, y, pointerId });
+fx.pointerMove({ x, y, pointerId });
+fx.pointerUp(pointerId);
+fx.pointerCancel(pointerId);
+fx.setInputSamplingRate(30);
+fx.updateConfig({ clickTimeScale: 1.5, trailTimeScale: 0.8 });
+fx.setPaused(true, { clear: true });</code></pre>
+      </div>
+    </details>
+  </section>
+
+  <!-- 底部交互提示 -->
+  <div class="hint-bar" id="hintBar">
+    <span>🖱 点击任意处</span>
+    <span class="hint-sep">·</span>
+    <span>按住拖动留下光轨</span>
+    <span class="hint-sep">·</span>
+    <span>按 <kbd>空格</kbd> 触发中心特效</span>
+    <button class="hint-dismiss" id="hintDismiss" title="关闭提示">✕</button>
+  </div>
+
+  <!-- 面板遮罩层：点击面板外区域关闭面板 -->
+  <div class="panel-overlay" id="panelOverlay"></div>
+
+  <!-- 控制面板 -->
+  <button class="panel-toggle" id="panelToggle" title="控制面板">⚙</button>
+  <aside class="panel" id="panel">
+    <div class="panel-header">
+      <h2>控制面板</h2>
+      <div class="panel-header-actions">
+        <button class="panel-pin" id="panelPin" title="固定面板">📌</button>
+        <button class="panel-close" id="panelClose">✕</button>
+      </div>
+    </div>
+
+    <!-- ── 基础 ── -->
+    <section class="panel-section">
+      <h3 id="sectionBasicHeading">基础</h3>
+      <details id="themeDetails" open>
+      <summary id="themeSummary">背景主题</summary>
+      <div class="theme-presets" id="themePresets">
+        <button class="theme-btn active" data-theme="蔚蓝" style="background: radial-gradient(circle at 30% 20%, #1d3558 0%, #101827 45%, #080d16 100%);" title="蔚蓝（默认）"></button>
+        <button class="theme-btn" data-theme="深紫" style="background: radial-gradient(circle at 30% 20%, #2d1b4e 0%, #1a1028 45%, #0d0616 100%);" title="深紫"></button>
+        <button class="theme-btn" data-theme="深绿" style="background: radial-gradient(circle at 30% 20%, #1a3d2a 0%, #0f1a14 45%, #080d0a 100%);" title="深绿"></button>
+        <button class="theme-btn" data-theme="暖金" style="background: radial-gradient(circle at 30% 20%, #3d2a1a 0%, #1f1910 45%, #14100a 100%);" title="暖金"></button>
+        <button class="theme-btn" data-theme="纯黑" style="background: #000000;" title="纯黑"></button>
+        <button class="theme-btn" data-theme="纯白" style="background: #ffffff; border: 1px solid #ccc;" title="纯白"></button>
+        <button class="theme-btn" data-theme="custom" style="background: conic-gradient(#666 0deg 90deg, #999 90deg 180deg, #666 180deg 270deg, #999 270deg 360deg);" title="自定义"></button>
+      </div>
+      <label class="ctrl custom-bg-ctrl" id="customBgCtrl" style="display:none;">
+        <span>自定义背景</span>
+      </label>
+      <input type="text" class="custom-bg-input" id="ctrlCustomBg" placeholder="CSS background 值或图片 URL…" style="display:none;" />
+      <label class="ctrl custom-bg-ctrl" id="customBgFileCtrl" for="ctrlCustomBgFile" style="display:none;">
+        <span>本地图片</span>
+      </label>
+      <input type="file" class="custom-bg-input" id="ctrlCustomBgFile" accept="image/*" style="display:none;" />
+      <button class="btn-reset custom-bg-apply" id="btnApplyBg" style="display:none;">应用背景</button>
+      </details>
+      <details id="displayDetails" open>
+      <summary id="displaySummary">显示</summary>
+      <label class="ctrl">
+        <span>主题颜色</span>
+        <input type="color" id="ctrlColor" value="#4ca7ff" />
+      </label>
+      <label class="ctrl">
+        <span>颜色作用</span>
+        <select id="ctrlThemeColorMode" class="ctrl-select">
+          <option value="relative-oklch" selected>相对 OKLCH（推荐）</option>
+          <option value="hue-only">仅色相（兼容）</option>
+        </select>
+      </label>
+      <label class="ctrl">
+        <span>全局缩放 <output id="outScale">1.00</output></span>
+        <input type="range" id="ctrlScale" min="0.01" max="5" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>不透明度 <output id="outOpacity">1.00</output></span>
+        <input type="range" id="ctrlOpacity" min="0" max="1" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>最大 DPR <output id="outDpr">1.00</output></span>
+        <input type="range" id="ctrlDpr" min="1" max="3" step="0.1" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>渲染模式</span>
+        <select id="ctrlRenderMode" class="ctrl-select">
+          <option value="full-webgpu-sdr">WebGPU</option>
+          <option value="full-webgpu">WebGPU HDR（实验）</option>
+          <option value="full-webgl2" selected>纯 WebGL2</option>
+          <option value="webgl2-bloom">WebGL2 Bloom</option>
+          <option value="software-bloom">软件 Bloom</option>
+          <option value="native-bloom">原生辉光</option>
+          <option value="legacy">Legacy</option>
+        </select>
+      </label>
+      <p class="sub-heading">UI HDR</p>
+      <div
+        id="hdrUiControls"
+        class="hdr-ui-controls is-inactive"
+        aria-disabled="true"
+      >
+        <label class="ctrl toggle">
+          <span>HDR UI 高光</span>
+          <input type="checkbox" id="ctrlHdrUiEnabled" checked disabled />
+          <span class="toggle-track"></span>
+        </label>
+        <label class="ctrl">
+          <span>UI HDR 亮度 <output id="outHdrUiBrightness">4.00</output>×</span>
+          <input type="range" id="ctrlHdrUiBrightness" min="1" max="16" step="0.25" value="4" disabled />
+        </label>
+      </div>
+      <label class="ctrl">
+        <span>输出合成</span>
+        <select id="ctrlOutputCompositing" class="ctrl-select">
+          <option value="scene" selected>场景合成</option>
+          <option value="browser-overlay">透明覆盖层</option>
+        </select>
+      </label>
+      <div
+        id="transparentCompositingControls"
+        class="transparent-compositing-controls is-inactive"
+        aria-disabled="true"
+      >
+        <label class="ctrl source-over-only-control">
+          <span>覆盖层 Alpha 策略</span>
+          <select
+            id="ctrlOverlayAlphaPolicy"
+            class="ctrl-select"
+            disabled
+          >
+            <option value="coverage" selected>Coverage 传输和</option>
+            <option value="visual-max">旧版视觉最大值</option>
+          </select>
+        </label>
+        <label class="ctrl source-over-only-control">
+          <span>覆盖层颜色补偿</span>
+          <select
+            id="ctrlOverlayColorCompensation"
+            class="ctrl-select"
+            disabled
+          >
+            <option value="none" selected>不补偿</option>
+            <option value="bright-core">浅色背景高能核心</option>
+          </select>
+        </label>
+        <label class="ctrl source-over-only-control">
+          <span>覆盖层 Alpha 上限 <output id="outOverlayAlphaLimit">0.98</output></span>
+          <input
+            type="range"
+            id="ctrlOverlayAlphaLimit"
+            min="0"
+            max="1"
+            step="0.00392156862745098"
+            value="0.9803921568627451"
+            disabled
+          />
+        </label>
+        <label class="ctrl">
+          <span>宿主合成</span>
+          <select id="ctrlHostCompositing" class="ctrl-select" disabled>
+            <option value="source-over" selected>Source-over</option>
+            <option value="screen">DOM Add（近似）</option>
+            <option value="plus-lighter">Plus-lighter（原始加色）</option>
+          </select>
+        </label>
+        <label class="ctrl">
+          <span>宿主表面</span>
+          <select id="ctrlHostCompositingSurface" class="ctrl-select" disabled>
+            <option value="dom-backdrop" selected>DOM 背景</option>
+            <option value="transparent-window">透明窗口</option>
+            <option value="native">原生合成器</option>
+          </select>
+        </label>
+        <p id="transparentCompositingNote" class="compositing-mode-note">
+          DOM Add 使用 Screen 自适应亮底，并停用 Alpha 策略、颜色补偿和 Alpha 上限；透明覆盖层策略都是浏览器视觉近似。
+        </p>
+      </div>
+      <label class="ctrl">
+        <span>特效背景参考</span>
+        <select id="ctrlCompositingReference" class="ctrl-select">
+          <option value="match-page" selected>匹配当前页面（精确）</option>
+          <option value="unknown">未知透明背景（兼容）</option>
+        </select>
+      </label>
+      <p id="compositingReferenceStatus" class="compositing-reference-status" aria-live="polite"></p>
+      <label class="ctrl toggle">
+        <span>隔离合成</span>
+        <input type="checkbox" id="ctrlIsolatedCompositing" />
+        <span class="toggle-track"></span>
+      </label>
+      <label class="ctrl">
+        <span>浅色背景对比 <output id="outLightBackgroundContrastAlpha">0.00</output></span>
+        <input
+          type="range"
+          id="ctrlLightBackgroundContrastAlpha"
+          min="0"
+          max="1"
+          step="0.01"
+          value="0"
+        />
+      </label>
+      <div id="renderBackendStatus" class="render-backend-status" data-hdr-state="inactive" aria-live="polite">
+        <dl class="render-status-list">
+          <div class="render-status-row">
+            <dt id="renderBackendLabel">实际后端</dt>
+            <dd id="renderBackendValue">正在检测纯 WebGL2…</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="renderCanvasOutputLabel">Canvas 输出</dt>
+            <dd id="renderCanvasOutputValue">未启用</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="renderDynamicRangeLabel">显示环境</dt>
+            <dd id="renderDynamicRangeValue">正在检测…</dd>
+          </div>
+          <div class="render-status-row render-status-verdict-row">
+            <dt id="renderHdrVerdictLabel">HDR 判断</dt>
+            <dd id="renderHdrVerdictValue">未启用 WebGPU HDR</dd>
+          </div>
+        </dl>
+        <p id="renderHdrStatusNote" class="render-status-note">浏览器侧判断；实际峰值亮度由系统和屏幕决定。</p>
+      </div>
+      <details id="webgpuDiagnosticDetails" class="webgpu-diagnostic-details">
+        <summary id="webgpuDiagnosticSummary">WebGPU 诊断详情</summary>
+        <dl class="render-status-list webgpu-diagnostic-list">
+          <div class="render-status-row">
+            <dt id="diagnosticSecureContextLabel">页面环境</dt>
+            <dd id="diagnosticSecureContextValue">正在检测...</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticWebGPUApiLabel">WebGPU API</dt>
+            <dd id="diagnosticWebGPUApiValue">正在检测...</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticCanvasContextLabel">Canvas Context</dt>
+            <dd id="diagnosticCanvasContextValue">尚未检测</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticAdapterLabel">Adapter</dt>
+            <dd id="diagnosticAdapterValue">尚未检测</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticDeviceLabel">Device</dt>
+            <dd id="diagnosticDeviceValue">尚未检测</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticExtendedCanvasLabel">Extended Canvas</dt>
+            <dd id="diagnosticExtendedCanvasValue">尚未检测</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticSdrFallbackLabel">Standard SDR</dt>
+            <dd id="diagnosticSdrFallbackValue">未启用</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticPipelineLabel">渲染管线</dt>
+            <dd id="diagnosticPipelineValue">尚未检测</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticGraphicsRangeLabel">图形动态范围</dt>
+            <dd id="diagnosticGraphicsRangeValue">正在检测...</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticVideoRangeLabel">视频动态范围</dt>
+            <dd id="diagnosticVideoRangeValue">正在检测...</dd>
+          </div>
+          <div class="render-status-row">
+            <dt id="diagnosticCssHdrLabel">CSS HDR 语法</dt>
+            <dd id="diagnosticCssHdrValue">正在检测...</dd>
+          </div>
+        </dl>
+        <p id="webgpuDiagnosticFailure" class="webgpu-diagnostic-failure" hidden></p>
+        <p id="webgpuDiagnosticNote" class="render-status-note">视频动态范围报告 High 不代表 WebGPU Canvas HDR 可用。</p>
+      </details>
+      <details id="hdrPresentationDetails">
+        <summary id="hdrPresentationHeading">HDR 显示映射</summary>
+        <div
+          id="hdrPresentationControls"
+          class="hdr-presentation-controls is-inactive"
+          aria-disabled="true"
+        >
+        <label class="ctrl">
+          <span>高光预设</span>
+          <select id="ctrlHdrPresentationPreset" class="ctrl-select" disabled>
+            <option value="balanced" selected>平衡白核（默认）</option>
+            <option value="bright">明亮白核</option>
+            <option value="color">保留原始色相</option>
+            <option value="custom">自定义</option>
+          </select>
+        </label>
+        <label class="ctrl">
+          <span>线性峰值 <output id="outWebGPUHdrPeak">3.00</output></span>
+          <input type="range" id="ctrlWebGPUHdrPeak" min="2" max="4" step="0.01" value="3" disabled />
+        </label>
+        <label class="ctrl">
+          <span>HDR 整体亮度 <output id="outWebGPUHdrBrightness">1.00</output>×</span>
+          <input type="range" id="ctrlWebGPUHdrBrightness" min="0" max="32" step="0.1" value="1" disabled />
+        </label>
+        <label class="ctrl">
+          <span>HDR 色相保持 <output id="outWebGPUHdrColorPreservation">0.00</output></span>
+          <input type="range" id="ctrlWebGPUHdrColorPreservation" min="0" max="1" step="0.01" value="0" disabled />
+        </label>
+        <label class="ctrl">
+          <span>白核强度 <output id="outWebGPUHdrWhiteCore">0.60</output></span>
+          <input type="range" id="ctrlWebGPUHdrWhiteCore" min="0" max="1" step="0.01" value="0.6" disabled />
+        </label>
+        <label class="ctrl">
+          <span>白核起点 <output id="outWebGPUHdrWhiteStart">1.00</output></span>
+          <input type="range" id="ctrlWebGPUHdrWhiteStart" min="0" max="8" step="0.01" value="1" disabled />
+        </label>
+        <label class="ctrl">
+          <span>白核终点 <output id="outWebGPUHdrWhiteEnd">5.00</output></span>
+          <input type="range" id="ctrlWebGPUHdrWhiteEnd" min="0.01" max="8" step="0.01" value="5" disabled />
+        </label>
+        </div>
+      </details>
+      </details>
+      <details id="hostApiDetails" open>
+      <summary id="hostApiSummary">宿主控制 API</summary>
+      <label class="ctrl">
+        <span>输入来源</span>
+        <select id="ctrlInputSource" class="ctrl-select">
+          <option value="dom" selected>DOM 自动监听</option>
+          <option value="manual">手动注入</option>
+        </select>
+      </label>
+      <label class="ctrl">
+        <span>输入采样率上限 (Hz) <output id="outInputSamplingRate" class="sampling-rate-output">0</output></span>
+        <input type="range" id="ctrlInputSamplingRate" min="0" max="1000" step="1" value="0" list="inputSamplingRatePresets" />
+        <datalist id="inputSamplingRatePresets">
+          <option value="0"></option>
+          <option value="15"></option>
+          <option value="30"></option>
+          <option value="60"></option>
+          <option value="120"></option>
+          <option value="240"></option>
+          <option value="500"></option>
+          <option value="1000"></option>
+        </datalist>
+      </label>
+      <label class="ctrl">
+        <span>点击速度 <output id="outClickTimeScale">1.00</output>×</span>
+        <input type="range" id="ctrlClickTimeScale" min="0.01" max="4" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾速度 <output id="outTrailTimeScale">1.00</output>×</span>
+        <input type="range" id="ctrlTrailTimeScale" min="0.01" max="4" step="0.01" value="1" />
+      </label>
+      <label class="ctrl toggle">
+        <span>暂停输入与动画</span>
+        <input type="checkbox" id="ctrlPaused" />
+        <span class="toggle-track"></span>
+      </label>
+      <label class="ctrl toggle">
+        <span>暂停时清屏</span>
+        <input type="checkbox" id="ctrlPauseClear" />
+        <span class="toggle-track"></span>
+      </label>
+      <label class="ctrl">
+        <span>触摸行为</span>
+        <select id="ctrlTouchAction" class="ctrl-select">
+          <option value="auto" selected>自动</option>
+          <option value="none">禁止默认手势</option>
+          <option value="pan-x">仅横向平移</option>
+          <option value="pan-y">仅纵向平移</option>
+          <option value="pinch-zoom">仅双指缩放</option>
+          <option value="pan-x pinch-zoom">横向平移与缩放</option>
+          <option value="pan-y pinch-zoom">纵向平移与缩放</option>
+          <option value="manipulation">直接操作</option>
+        </select>
+      </label>
+      <div class="host-api-actions">
+        <button class="btn-reset" id="btnTriggerBoom">触发中心点击</button>
+        <button class="btn-reset" id="btnClearTrail">清除拖尾</button>
+        <button class="btn-reset" id="btnClearEffects">清除全部</button>
+        <button class="btn-reset" id="btnCopyConfig">复制当前配置</button>
+        <button class="btn-reset" id="btnApplyFxParams">原子应用参数</button>
+        <button class="btn-reset" id="btnDestroyInstance">销毁并刷新</button>
+      </div>
+      <p id="hostApiStatus" class="host-api-status" aria-live="polite">DOM 模式：库自动监听 window 指针事件。</p>
+      </details>
+    </section>
+
+    <!-- ── 点击特效 ── -->
+    <section class="panel-section">
+      <h3 id="sectionClickHeading">点击特效</h3>
+      <label class="ctrl toggle">
+        <span>启用点击特效</span>
+        <input type="checkbox" id="ctrlClick" checked />
+        <span class="toggle-track"></span>
+      </label>
+      <details id="ringDetails">
+      <summary id="ringSummary">圆环</summary>
+      <label class="ctrl">
+        <span>圆环数量 <output id="outRingCount">2</output></span>
+        <input type="range" id="ctrlRingCount" min="0" max="6" step="1" value="2" />
+      </label>
+      <label class="ctrl">
+        <span>圆环 HDR 强度 <output id="outRingHdr">5.99</output></span>
+        <input type="range" id="ctrlRingHdr" min="0" max="8" step="0.01" value="5.99" />
+      </label>
+      <label class="ctrl">
+        <span>圆环起始半径 <output id="outRingRadMin">68.93</output></span>
+        <input type="range" id="ctrlRingRadMin" min="20" max="120" step="0.01" value="68.92571232" />
+      </label>
+      <label class="ctrl">
+        <span>圆环终止半径 <output id="outRingRadMax">80.41</output></span>
+        <input type="range" id="ctrlRingRadMax" min="20" max="120" step="0.01" value="80.41333104" />
+      </label>
+      <label class="ctrl">
+        <span>圆环带宽比例 <output id="outRingBandRatio">0.06</output></span>
+        <input type="range" id="ctrlRingBandRatio" min="0.01" max="0.2" step="0.0001" value="0.0598573766034603" />
+      </label>
+      <label class="ctrl">
+        <span>圆环起始厚度倍率 <output id="outRingWStart">1.00</output></span>
+        <input type="range" id="ctrlRingWStart" min="0.25" max="2" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>圆环终止厚度倍率 <output id="outRingWEnd">1.00</output></span>
+        <input type="range" id="ctrlRingWEnd" min="0.25" max="2" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>圆环寿命 <output id="outRingLife">600</output> ms</span>
+        <input type="range" id="ctrlRingLife" min="50" max="2000" step="1" value="600" />
+      </label>
+      <label class="ctrl">
+        <span>旋转速度倍率 <output id="outAngVelMul">11.17</output></span>
+        <input type="range" id="ctrlAngVelMul" min="1" max="30" step="0.01" value="11.17" />
+      </label>
+      <label class="ctrl">
+        <span>弧线采样精度 <output id="outArcSamples">96</output></span>
+        <input type="range" id="ctrlArcSamples" min="24" max="192" step="1" value="96" />
+      </label>
+      <label class="ctrl">
+        <span>径向采样精度 <output id="outRadialSamples">8</output></span>
+        <input type="range" id="ctrlRadialSamples" min="2" max="16" step="1" value="8" />
+      </label>
+      <label class="ctrl">
+        <span>旋转方向 <output id="outRingDir">逆时针</output></span>
+        <input type="range" id="ctrlRingDir" min="-1" max="1" step="2" value="-1" />
+      </label>
+      <label class="ctrl">
+        <span>溶解方向 <output id="outDissolveDir">正向</output></span>
+        <input type="range" id="ctrlDissolveDir" min="-1" max="1" step="2" value="1" />
+      </label>
+      </details>
+      <details id="diskDetails">
+      <summary id="diskSummary">光盘</summary>
+      <label class="ctrl">
+        <span>光盘半径 <output id="outDiskRadius">64.80</output></span>
+        <input type="range" id="ctrlDiskRadius" min="20" max="120" step="0.01" value="64.8" />
+      </label>
+      <label class="ctrl">
+        <span>光盘寿命 <output id="outDiskLife">200</output> ms</span>
+        <input type="range" id="ctrlDiskLife" min="50" max="500" step="1" value="200" />
+      </label>
+      </details>
+      <details id="hitFlareDetails">
+      <summary id="hitFlareSummary">Hit / Flare</summary>
+      <label class="ctrl toggle">
+        <span>启用 Hit 撞击爆发</span>
+        <input type="checkbox" id="ctrlHitEnabled" />
+        <span class="toggle-track"></span>
+      </label>
+      <label class="ctrl">
+        <span>Hit 半径 <output id="outHitRadius">24.00</output></span>
+        <input type="range" id="ctrlHitRadius" min="10" max="60" step="0.01" value="24" />
+      </label>
+      <label class="ctrl">
+        <span>Hit 寿命 <output id="outHitLife">80</output> ms</span>
+        <input type="range" id="ctrlHitLife" min="20" max="200" step="1" value="80" />
+      </label>
+      <label class="ctrl toggle">
+        <span>启用 Flare 闪光</span>
+        <input type="checkbox" id="ctrlFlareEnabled" />
+        <span class="toggle-track"></span>
+      </label>
+      <label class="ctrl">
+        <span>Flare 半径 <output id="outFlareRadius">36.00</output></span>
+        <input type="range" id="ctrlFlareRadius" min="10" max="80" step="0.01" value="36" />
+      </label>
+      <label class="ctrl">
+        <span>Flare 寿命 <output id="outFlareLife">150</output> ms</span>
+        <input type="range" id="ctrlFlareLife" min="50" max="300" step="1" value="150" />
+      </label>
+      <label class="ctrl">
+        <span>Flare 射线数 <output id="outFlareRays">6</output></span>
+        <input type="range" id="ctrlFlareRays" min="3" max="12" step="1" value="6" />
+      </label>
+      </details>
+    </section>
+
+    <!-- ── 碎片 ── -->
+    <section class="panel-section">
+      <h3 id="sectionShardsHeading">碎片</h3>
+      <details id="sharedShardsDetails" open>
+      <summary id="sharedShardsSummary">通用参数</summary>
+      <label class="ctrl">
+        <span>碎片 HDR 强度 <output id="outShardHdr">5.99</output></span>
+        <input type="range" id="ctrlShardHdr" min="0" max="8" step="0.01" value="5.992157" />
+      </label>
+      <label class="ctrl">
+        <span>碎片圆角 <output id="outShardRoundness">0.00</output></span>
+        <input type="range" id="ctrlShardRoundness" min="0" max="1" step="0.01" value="0" />
+      </label>
+      <label class="ctrl">
+        <span>碎片最小尺寸 <output id="outShardSizeMin">16.63</output></span>
+        <input type="range" id="ctrlShardSizeMin" min="0" max="100" step="0.01" value="16.6256496" />
+      </label>
+      <label class="ctrl">
+        <span>碎片最大尺寸 <output id="outShardSizeMax">33.25</output></span>
+        <input type="range" id="ctrlShardSizeMax" min="0" max="100" step="0.01" value="33.2512992" />
+      </label>
+      </details>
+      <details id="clickShardsDetails">
+      <summary id="clickShardsSummary">点击碎片</summary>
+      <label class="ctrl">
+        <span>点击碎片数量 <output id="outClickShards">4</output></span>
+        <input type="range" id="ctrlClickShards" min="0" max="12" step="1" value="4" />
+      </label>
+      <label class="ctrl">
+        <span>点击碎片最短寿命 <output id="outClickShardLifeMin">600</output> ms</span>
+        <input type="range" id="ctrlClickShardLifeMin" min="100" max="1000" step="1" value="600" />
+      </label>
+      <label class="ctrl">
+        <span>点击碎片最长寿命 <output id="outClickShardLifeMax">700</output> ms</span>
+        <input type="range" id="ctrlClickShardLifeMax" min="100" max="1000" step="1" value="700" />
+      </label>
+      <label class="ctrl">
+        <span>点击发射半径 <output id="outClickShardRadius">49.88</output></span>
+        <input type="range" id="ctrlClickShardRadius" min="0" max="200" step="0.01" value="49.8769488" />
+      </label>
+      <label class="ctrl">
+        <span>点击碎片最低速度 <output id="outClickShardSpeedMin">49.88</output></span>
+        <input type="range" id="ctrlClickShardSpeedMin" min="0" max="200" step="0.01" value="49.8769488" />
+      </label>
+      <label class="ctrl">
+        <span>点击碎片最高速度 <output id="outClickShardSpeedMax">66.50</output></span>
+        <input type="range" id="ctrlClickShardSpeedMax" min="0" max="200" step="0.01" value="66.5025984" />
+      </label>
+      </details>
+      <details id="trailShardsDetails">
+      <summary id="trailShardsSummary">拖尾碎片</summary>
+      <label class="ctrl">
+        <span>拖尾碎片间距 <output id="outShardSpacing">108.00</output></span>
+        <input type="range" id="ctrlShardSpacing" min="10" max="500" step="0.01" value="108" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾碎片上限 <output id="outMaxShards">50</output></span>
+        <input type="range" id="ctrlMaxShards" min="0" max="500" step="1" value="50" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾碎片最短寿命 <output id="outTrailShardLifeMin">200</output> ms</span>
+        <input type="range" id="ctrlTrailShardLifeMin" min="50" max="500" step="1" value="200" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾碎片最长寿命 <output id="outTrailShardLifeMax">400</output> ms</span>
+        <input type="range" id="ctrlTrailShardLifeMax" min="50" max="500" step="1" value="400" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾发射半径 <output id="outTrailShardRadius">24.94</output></span>
+        <input type="range" id="ctrlTrailShardRadius" min="0" max="100" step="0.01" value="24.9384744" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾碎片最低速度 <output id="outTrailShardSpeedMin">33.25</output></span>
+        <input type="range" id="ctrlTrailShardSpeedMin" min="0" max="150" step="0.01" value="33.2512992" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾碎片最高速度 <output id="outTrailShardSpeedMax">49.88</output></span>
+        <input type="range" id="ctrlTrailShardSpeedMax" min="0" max="150" step="0.01" value="49.8769488" />
+      </label>
+      </details>
+    </section>
+
+    <!-- ── 拖尾轨迹 ── -->
+    <section class="panel-section">
+      <h3 id="sectionTrailHeading">拖尾轨迹</h3>
+      <label class="ctrl toggle">
+        <span>启用拖尾</span>
+        <input type="checkbox" id="ctrlTrail" checked />
+        <span class="toggle-track"></span>
+      </label>
+      <label class="ctrl toggle">
+        <span>始终显示</span>
+        <input type="checkbox" id="ctrlTrailAlways" />
+        <span class="toggle-track"></span>
+      </label>
+      <details id="trailLayerDetails">
+      <summary id="trailLayerSummary">轨迹图层</summary>
+      <label class="ctrl">
+        <span>拖尾宽度 <output id="outTrailW">2.70</output></span>
+        <input type="range" id="ctrlTrailW" min="1" max="25" step="0.01" value="2.7" />
+      </label>
+      <label class="ctrl">
+        <span>外发光宽度 <output id="outTrailGlowW">9.00</output></span>
+        <input type="range" id="ctrlTrailGlowW" min="1" max="40" step="0.1" value="9" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾寿命 <output id="outTrailLife">300</output> ms</span>
+        <input type="range" id="ctrlTrailLife" min="50" max="2000" step="1" value="300" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾整体透明度 <output id="outTrailOpacity">1.00</output></span>
+        <input type="range" id="ctrlTrailOpacity" min="0" max="1" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>几何带宽 <output id="outGeomWidth">2.70</output></span>
+        <input type="range" id="ctrlGeomWidth" min="1" max="8" step="0.01" value="2.7" />
+      </label>
+      <label class="ctrl">
+        <span>最小采样间距 <output id="outMinVertDist">5.40</output></span>
+        <input type="range" id="ctrlMinVertDist" min="1" max="20" step="0.01" value="5.4" />
+      </label>
+      <label class="ctrl">
+        <span>折点圆角顶点数 <output id="outCornerVerts">4</output></span>
+        <input type="range" id="ctrlCornerVerts" min="0" max="12" step="1" value="4" />
+      </label>
+      <label class="ctrl">
+        <span>端帽顶点数 <output id="outCapVerts">1</output></span>
+        <input type="range" id="ctrlCapVerts" min="0" max="6" step="1" value="1" />
+      </label>
+      </details>
+    </section>
+
+    <!-- ── Bloom ── -->
+    <section class="panel-section">
+      <h3 id="sectionBloomHeading">Bloom</h3>
+      <details id="bloomPipelineDetails">
+      <summary id="bloomPipelineSummary">全局 Bloom</summary>
+      <label class="ctrl">
+        <span>Bloom 阈值 <output id="outBloomThreshold">1.00</output></span>
+        <input type="range" id="ctrlBloomThreshold" min="0" max="5" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>Bloom 柔化膝点 <output id="outBloomSoftKnee">0.00</output></span>
+        <input type="range" id="ctrlBloomSoftKnee" min="0" max="1" step="0.01" value="0" />
+      </label>
+      <label class="ctrl">
+        <span>Bloom 亮度钳位 <output id="outBloomClamp">65472</output></span>
+        <input type="range" id="ctrlBloomClamp" min="1" max="65504" step="1" value="65472" />
+      </label>
+      <label class="ctrl">
+        <span>Bloom 强度 <output id="outBloomIntensity">1.70</output></span>
+        <input type="range" id="ctrlBloomIntensity" min="0" max="2" step="0.01" value="1.7" />
+      </label>
+      <label class="ctrl">
+        <span>Bloom 扩散 <output id="outBloomDiffusion">7.00</output></span>
+        <input type="range" id="ctrlBloomDiffusion" min="0" max="10" step="0.01" value="7" />
+      </label>
+      <label class="ctrl">
+        <span>Bloom 分辨率倍率 <output id="outBloomResolution">0.50</output></span>
+        <input type="range" id="ctrlBloomResolution" min="0.1" max="0.75" step="0.01" value="0.5" />
+      </label>
+      <label class="ctrl">
+        <span>Bloom 发射范围 <output id="outBloomEmission">23.97</output></span>
+        <input type="range" id="ctrlBloomEmission" min="1" max="64" step="0.01" value="23.968628" />
+      </label>
+      </details>
+      <details id="bloomClickDetails">
+      <summary id="bloomClickSummary">点击辉光</summary>
+      <label class="ctrl">
+        <span>点击辉光强度 <output id="outClickGlow">1.00</output></span>
+        <input type="range" id="ctrlClickGlow" min="0" max="4" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>原生圆环模糊 <output id="outBloomRing">80.00</output></span>
+        <input type="range" id="ctrlBloomRing" min="0" max="200" step="0.1" value="80" />
+      </label>
+      <label class="ctrl">
+        <span>原生光盘模糊 <output id="outBloomDisk">65.00</output></span>
+        <input type="range" id="ctrlBloomDisk" min="0" max="200" step="0.1" value="65" />
+      </label>
+      <label class="ctrl">
+        <span>光盘发射强度 <output id="outBloomDiskEmission">2.00</output></span>
+        <input type="range" id="ctrlBloomDiskEmission" min="0" max="8" step="0.01" value="2" />
+      </label>
+      <label class="ctrl">
+        <span>圆环核心发射 Alpha <output id="outBloomRingCoreAlpha">1.00</output></span>
+        <input type="range" id="ctrlBloomRingCoreAlpha" min="0" max="1" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>光盘核心发射 Alpha <output id="outBloomDiskCoreAlpha">1.00</output></span>
+        <input type="range" id="ctrlBloomDiskCoreAlpha" min="0" max="1" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>圆环辉光 Alpha <output id="outBloomRingAlpha">0.35</output></span>
+        <input type="range" id="ctrlBloomRingAlpha" min="0" max="1" step="0.01" value="0.35" />
+      </label>
+      <label class="ctrl">
+        <span>光盘辉光 Alpha <output id="outBloomDiskAlpha">0.65</output></span>
+        <input type="range" id="ctrlBloomDiskAlpha" min="0" max="1" step="0.01" value="0.65" />
+      </label>
+      </details>
+      <details id="bloomTrailDetails">
+      <summary id="bloomTrailSummary">拖尾辉光</summary>
+      <label class="ctrl">
+        <span>Bloom 拖尾发射校准 <output id="outBloomTrail">1.00</output></span>
+        <input type="range" id="ctrlBloomTrail" min="0" max="1" step="0.01" value="1" />
+      </label>
+      <label class="ctrl">
+        <span>原生拖尾辉光 Alpha <output id="outBloomTrailAlpha">0.18</output></span>
+        <input type="range" id="ctrlBloomTrailAlpha" min="0" max="1" step="0.01" value="0.18" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾发射强度 <output id="outBloomTrailEmission">23.97</output></span>
+        <input type="range" id="ctrlBloomTrailEmission" min="0" max="64" step="0.01" value="23.968628" />
+      </label>
+      <label class="ctrl">
+        <span>拖尾覆盖倍率 <output id="outBloomTrailCoverage">1.00</output></span>
+        <input type="range" id="ctrlBloomTrailCoverage" min="0" max="4" step="0.01" value="1" />
+      </label>
+      </details>
+    </section>
+    <div class="panel-actions">
+      <button id="btnReset" class="btn-reset">重置默认</button>
+    </div>
+  </aside>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

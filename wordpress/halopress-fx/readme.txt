@@ -3,7 +3,7 @@ Contributors: halopress-fx
 Tags: click effect, cursor trail, animation, canvas, webgl
 Requires at least: 6.0
 Requires PHP: 7.4
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -38,6 +38,11 @@ HaloPress-FX 将 ba-click-fx 动画引擎封装为无需修改主题的 WordPres
 插件优先保留浏览器原生滚动。触摸轻点会显示动画，页面滑动不会强制抢占手势。
 
 == Changelog ==
+
+= 0.1.1 =
+
+* 修复 Windows 构建的 ZIP 在 Linux 服务器上把反斜杠路径解压为普通文件名的问题。
+* 增加 ZIP 原始条目路径校验，阻止无效或不安全的发行包发布。
 
 = 0.1.0 =
 

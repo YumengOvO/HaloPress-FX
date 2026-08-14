@@ -1,5 +1,7 @@
 # HaloPress-FX
 
+中文 | [English](README.en.md)
+
 [![Build](https://github.com/YumengOvO/HaloPress-FX/actions/workflows/build.yml/badge.svg)](https://github.com/YumengOvO/HaloPress-FX/actions/workflows/build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![WordPress](https://img.shields.io/badge/WordPress-6.0%2B-21759b?logo=wordpress)](https://wordpress.org/)

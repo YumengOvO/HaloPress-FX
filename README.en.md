@@ -41,7 +41,7 @@ Native browser scrolling and zooming remain enabled on mobile by default:
 - The “always show trail while moving” setting is automatically ignored
 - Uses `touch-action: auto` and does not capture page-scrolling gestures
 
-### Why Is There No Trail While Swiping in a Mobile Browser?
+### Why does dragging fail to leave a trail in a mobile browser?
 
 HaloPress-FX prioritizes native scrolling on WordPress pages. When the browser takes control of a touch swipe, it may send `pointercancel`, which ends the current trail while leaving tap animations available.
 
@@ -126,10 +126,10 @@ Advanced parameters are collapsed by default and are intended for users who want
 HaloPress-FX preserves the advanced configuration semantics of the upstream animation engine:
 
 - The bundled engine currently corresponds to `ba-click-fx@1.2.29`. If you are developing against the animation engine separately, install the matching version with `npm install ba-click-fx@1.2.29`.
-- `maxDpr` is the maximum device pixel ratio and defaults to 1. The High Quality preset explicitly raises this value.
+- `maxDpr?: number, // default 1` defines the maximum device pixel ratio. The High Quality preset explicitly raises this value.
 - `inputSamplingRate` accepts `0` or `1..1000` Hz, where `0` means unlimited. For example, `inputSamplingRate: 30` limits movement input to 30 samples per second.
 - WebGPU availability does not mean HDR is enabled. Only `resolvedWebGPUOutputMode === 'extended'` confirms that the browser successfully created an `rgba16float + toneMapping: extended` output.
-- “UI HDR” on the demo page is specific to the demonstration site and is not part of the WordPress plugin frontend. Its CSS capability checks may involve `dynamic-range-limit: no-limit`.
+- The demo's UI HDR controls are demo-only and are not part of the WordPress plugin frontend. Related CSS capability checks may involve `dynamic-range-limit: no-limit`.
 - Color mapping supports the compatibility mode `hue-only` and the relative mapping mode `relative-oklch`.
 
 ## Development Commands

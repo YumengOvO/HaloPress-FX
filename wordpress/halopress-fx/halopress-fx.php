@@ -1,11 +1,13 @@
 <?php
 /**
  * Plugin Name:       HaloPress-FX
+ * Plugin URI:        https://github.com/YumengOvO/HaloPress-FX
  * Description:       为 WordPress 前台添加点击粒子、光环与光标拖尾动画。
  * Version:           0.1.2
  * Requires at least: 6.0
  * Requires PHP:      7.4
- * Author:            HaloPress-FX Contributors
+ * Author:            YumengOvO
+ * Author URI:        https://github.com/YumengOvO
  * License:           MIT
  * License URI:       https://opensource.org/licenses/MIT
  * Text Domain:       halopress-fx

@@ -83,7 +83,7 @@ npm run package:wordpress
 The generated installation package is located at:
 
 ```text
-releases/halopress-fx-0.1.2.zip
+releases/halopress-fx-0.1.3.zip
 ```
 
 ## Admin Settings
